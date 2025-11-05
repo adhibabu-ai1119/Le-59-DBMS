@@ -1,0 +1,98 @@
+CREATE TABLE sailors(
+    sid integer primary key,
+    sname VARCHAR(255),
+    age decimal(4,1),
+    rating integer
+);
+
+
+insert into sailors values(22, 'Dustin', 45.0, 7);
+insert into sailors values(29, 'Brutus', 33.0, 1);
+insert into sailors values(31, 'Lubber', 55.5, 8);
+insert into sailors values(32, 'Andy', 25.5, 8);
+insert into sailors values(64, 'Horatio', 35.0, 7);
+insert into sailors values(71, 'Zobra', 16.0, 10);
+insert into sailors values(74, 'Ravi', 40.0, 9);
+insert into sailors values(85, 'Art', 26.5, 3);
+insert into sailors values(95, 'Bob', 63.5, 3);
+insert into sailors values(58, 'Rusty', 35.0, 10);
+
+-- Select data
+SELECT * FROM sailors;
+
+-- Step 1:Create the table
+CREATE TABLE boats (
+    BID INT PRIMARY KEY,
+    BNAME VARCHAR(50),
+    BCOLOR VARCHAR(20)
+);
+
+-- Step 2: Insert the rows
+INSERT INTO boats (BID, BNAME, BCOLOR) VALUES (101, 'Interlake', 'Blue');
+INSERT INTO boats (BID, BNAME, BCOLOR) VALUES (102, 'Interlake', 'Red');
+INSERT INTO boats (BID, BNAME, BCOLOR) VALUES (104, 'Marine', 'Red');
+INSERT INTO boats (BID, BNAME, BCOLOR) VALUES (103, 'Clipper', 'Green');
+
+
+
+
+-- Step 1: Create the table
+CREATE TABLE reserves (
+    SID INT,
+    BID INT,
+    RDATE DATE,
+    FOREIGN KEY (SID) REFERENCES sailors(SID),
+    FOREIGN KEY (BID) REFERENCES boats(BID)
+);
+
+-- Step 2: Insert the rows
+INSERT INTO reserves VALUES (22, 101, '10-OCT-98');
+INSERT INTO reserves VALUES (22, 102, '10-OCT-98');
+INSERT INTO reserves VALUES (22, 103, '08-OCT-98');
+INSERT INTO reserves VALUES (22, 104, '07-OCT-98');
+INSERT INTO reserves VALUES (31, 102, '10-NOV-98');
+INSERT INTO reserves VALUES (31, 103, '06-NOV-98');
+INSERT INTO reserves VALUES (31, 104, '12-NOV-98');
+INSERT INTO reserves VALUES (64, 101, '05-SEP-98');
+INSERT INTO reserves VALUES (64, 102, '08-SEP-98');
+INSERT INTO reserves VALUES (74, 103, '08-SEP-98');
+select * from sailors,reserves;
+
+select * from sailors s,reserves r where s.sid=r.sid and r.bid=103;
+
+select s.sname from sailors s,reserves r where s.sid=r.sid and r.bid=103;
+
+
+select b.bcolor from sailors s,reserves r,boats b where s.sid=r.sid and r.bid=b.bid and s.sname='Lubber';
+
+find sid of sailor who have reserved a red boat
+select r.sid from reserves r,boats b where r.bid=b.bid and b.bcolor='Red';
+
+
+find the names of sailors who have reserved a red boat :
+select  s.sname from sailors s, reserves r, boats b where s.sid = r.sid and r.bid = b.bid and b.bcolor = 'Red';
+
+find the names of sailors who have reservved a green boat
+select  s.sname from sailors s, reserves r, boats b where s.sid = r.sid and r.bid = b.bid and b.bcolor = 'Green';
+
+==>uninon will eliminate the duplicates
+find the names of sailors who have reservved a red or a green boats
+
+select  s.sname from sailors s, reserves r, boats b where s.sid = r.sid and r.bid = b.bid and b.bcolor = 'Red'
+UNION
+select  s1.sname from sailors s1, reserves r1, boats b1 where s1.sid = r1.sid and r1.bid = b1.bid and b1.bcolor = 'Green';
+
+==>UNION ALL:
+select  s.sname from sailors s, reserves r, boats b where s.sid = r.sid and r.bid = b.bid and b.bcolor = 'Red'
+UNION ALL
+select  s1.sname from sailors s1, reserves r1, boats b1 where s1.sid = r1.sid and r1.bid = b1.bid and b1.bcolor = 'Green';
+
+==>remove the duplicates
+select  s.sname from sailors s, reserves r, boats b where s.sid = r.sid and r.bid = b.bid and b.bcolor = 'Red'
+intersect
+select  s1.sname from sailors s1, reserves r1, boats b1 where s1.sid = r1.sid and r1.bid = b1.bid and b1.bcolor = 'Green';
+
+==>find the names of sailors who have resserved a red boat but not  agreen boat
+select  s.sname from sailors s, reserves r, boats b where s.sid = r.sid and r.bid = b.bid and b.bcolor = 'Red'
+minus
+select  s1.sname from sailors s1, reserves r1, boats b1 where s1.sid = r1.sid and r1.bid = b1.bid and b1.bcolor = 'Green';
